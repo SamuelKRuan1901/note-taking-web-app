@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 const CommonInput = ({
-  label,
+  label = '',
   type,
   placeholder = '',
   isLoginPage = false,

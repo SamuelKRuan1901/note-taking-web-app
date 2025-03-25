@@ -10,6 +10,9 @@ import LockIcon from '@/assets/images/icon-lock.svg';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import SettingOptionsPage from '@/components/SettingOptionsPage';
+import CreateNote from '@/components/CreateNote';
+import { signOut } from 'next-auth/react';
+import { toast } from 'react-toastify';
 const DesktopContent = () => {
   const { chosen, noteId, data, setNoteId } = useContext(NoteContext);
   const filteredNotes = data.notes.filter((note) => note.tags.includes(chosen));
@@ -34,10 +37,10 @@ const DesktopContent = () => {
 
   const handleLogout = () => {
     // logout logic and redirect to Login page
+    signOut();
+    toast.success('Logout success');
     redirect('/login');
   };
-
-  console.log(noteId);
 
   const handleShowComponents = (chosen) => {
     if (chosen === 'Notes') {
@@ -137,15 +140,19 @@ const DesktopContent = () => {
   return (
     <div className='w-full h-full flex justify-start items-start'>
       <div className='w-56 h-full flex flex-col gap-1 pt-4 px-2 border-r border-l border-slate-400'>
-        <PrimaryButton content={'Create New Note'} />
+        <PrimaryButton
+          content={'Create New Note'}
+          onClick={() => setNoteId(null)}
+        />
         <div className='w-52 h-screen mt-2 overflow-y-auto overflow-x-hidden'>
           {handleShowComponents(chosen)}
         </div>
       </div>
       {typeof noteId === 'number' && <NoteSinglePage noteId={noteId} />}
       {typeof noteId === 'string' && <SettingOptionsPage noteId={noteId} />}
+      {noteId === null && <CreateNote />}
     </div>
   );
 };
-``;
+
 export default DesktopContent;

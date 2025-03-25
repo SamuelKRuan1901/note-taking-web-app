@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { NoteProvider } from '@/contexts/NoteProvider';
 import { SettingProvider } from '@/contexts/SettingProvider';
 import { ThemeProvider } from 'next-themes';
+import AuthProvider from '@/contexts/AuthProvider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -27,13 +28,19 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-slate-900 `}
       >
-        <SettingProvider>
-          <ThemeProvider attribute={'class'} enableSystem defaultTheme='system'>
-            <NoteProvider>
-              <main>{children}</main>
-            </NoteProvider>
-          </ThemeProvider>
-        </SettingProvider>
+        <AuthProvider>
+          <SettingProvider>
+            <ThemeProvider
+              attribute={'class'}
+              enableSystem
+              defaultTheme='system'
+            >
+              <NoteProvider>
+                <main>{children}</main>
+              </NoteProvider>
+            </ThemeProvider>
+          </SettingProvider>
+        </AuthProvider>
         <ToastContainer />
       </body>
     </html>

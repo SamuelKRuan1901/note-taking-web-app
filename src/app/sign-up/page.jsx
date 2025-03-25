@@ -9,28 +9,52 @@ import PrimaryButton from '@/components/PrimaryButton';
 import BorderButton from '@/components/BorderButton';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
+import { redirect } from 'next/navigation';
 
 const SignUpPage = () => {
   const [err, setErr] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [cfPassword, setCfPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     if (!email || !password || !cfPassword) {
       setErr(true);
       toast.error('Please fill all fields');
+      setIsLoading(false);
       return;
     }
     if (password !== cfPassword) {
       setErr(true);
       toast.error('Password and Confirm Password must be the same');
+      setIsLoading(false);
       return;
     }
     setErr(false);
     console.log(email, password);
-    toast.success('Sign up success');
+    const res = await fetch('/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    let status = res.status;
+    if (status === 201) {
+      toast.success('Sign up success');
+      redirect('/login');
+    }
+    if (status === 400) {
+      toast.error('User already exists');
+      setIsLoading(false);
+      return;
+    }
+    if (status === 500) {
+      toast.error('Internal server error');
+      setIsLoading(false);
+      return;
+    }
   };
 
   return (
@@ -90,12 +114,20 @@ const SignUpPage = () => {
               Password must be at least 8 characters.
             </span>
           </div>
-          <PrimaryButton content={'Login'} type={'submit'} />
+          <PrimaryButton
+            content={isLoading ? 'Loading' : 'Sign up'}
+            type={'submit'}
+            disabled={isLoading}
+          />
         </form>
         <hr className='text-slate-500' />
         <form className='flex flex-col gap-5 items-center justify-center'>
           <div className='text-slate-600'>Or log in with</div>
-          <BorderButton content={'Google'} icon={GoogleIcon} />
+          <BorderButton
+            content={'Google'}
+            icon={GoogleIcon}
+            disabled={isLoading}
+          />
         </form>
         <div className='text-center text-slate-600'>
           Already have account?{' '}
