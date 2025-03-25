@@ -56,14 +56,14 @@ const NoteSinglePage = () => {
           name='note-text'
           rows={15}
           cols={50}
-          className='w-full h-auto my-4 border-0 overflow-auto py-3'
+          className='w-full h-auto my-4 border-0 overflow-auto p-3'
           value={changeNoteContent}
           placeholder={noteContent}
           onChange={(e) => handleEditNote(e)}
           onClick={handleStartChangeNote}
         ></textarea>
       </div>
-      <div className='w-40 py-2 px-2 border-l border-slate-400 flex flex-col justify-between gap-4'>
+      <div className='w-44 py-2 px-2 border-l border-slate-400 flex flex-col justify-between gap-4'>
         <div className='w-full flex flex-col gap-3'>
           <BorderButton content={'Archive Note'} icon={ArchiveIcon} />
           <BorderButton content={'Delete Note'} icon={DeleteIcon} />

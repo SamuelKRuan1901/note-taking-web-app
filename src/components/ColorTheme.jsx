@@ -54,7 +54,7 @@ const ColorTheme = () => {
           <div
             key={colorTheme.id}
             className={`w-full flex items-center justify-between
-              gap-4 p-2 border-2 border-slate-400 rounded-2xl 
+              gap-4 p-2 border-1 border-slate-400 rounded-2xl 
               dark:hover:bg-slate-500 active:text-slate-900
               cursor-pointer hover:bg-slate-200 ${
                 theme === colorTheme.value
@@ -65,7 +65,7 @@ const ColorTheme = () => {
           >
             <div className='w-72 flex items-center gap-5'>
               <div
-                className={`w-12 h-12 border-2 border-slate-400
+                className={`w-12 h-12 border-1 border-slate-400
                  rounded-xl flex items-center justify-center`}
               >
                 <Image

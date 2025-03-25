@@ -1,95 +1,88 @@
-import SunIcon from '@/assets/images/icon-sun.svg';
-import MoonIcon from '@/assets/images/icon-moon.svg';
-import SysIcon from '@/assets/images/icon-system-theme.svg';
+'use client';
+import SansSerifIcon from '@/assets/images/icon-font-sans-serif.svg';
+import SerifIcon from '@/assets/images/icon-font-serif.svg';
+import MonoSpaceIcon from '@/assets/images/icon-font-monospace.svg';
 import Image from 'next/image';
-import { useTheme } from 'next-themes';
+import { useContext } from 'react';
+import { SettingContext } from '@/contexts/SettingProvider';
 
 const FontTheme = () => {
-  const { theme, setTheme } = useTheme();
-
-  const colorThemes = [
+  const fontThemes = [
     {
       id: 0,
-      name: 'Light Mode',
-      detail: 'Choose a clean and classic light theme',
-      value: 'light',
-      icon: SunIcon,
-      alt: 'sunIcon'
+      name: 'Sans-Serif',
+      detail: 'A clean and modern, easy to read.',
+      value: 'sans',
+      icon: SansSerifIcon,
+      alt: 'sansSerifIcon'
     },
     {
       id: 1,
-      name: 'Dark Mode',
-      detail: 'Choose a sleek and modern dark theme',
-      value: 'dark',
-      icon: MoonIcon,
-      alt: 'moonIcon'
+      name: 'Serif',
+      detail: 'Classic and elegant for a timeless feel.',
+      value: 'serif',
+      icon: SerifIcon,
+      alt: 'serifIcon'
     },
     {
       id: 2,
-      name: 'System',
-      detail: "Adapts to your device's system",
-      value: 'system',
-      icon: SysIcon,
-      alt: 'sysIcon'
+      name: 'Monospace',
+      detail: 'Code-like, great for technical vibe',
+      value: 'mono',
+      icon: MonoSpaceIcon,
+      alt: 'monoSpaceIcon'
     }
   ];
 
-  // const handleChooseTheme = (themeId) => {
-  //   setChosenOption(themeId);
-  //   console.log(chosenOption);
-  //   if (chosenOption === '0') {
-  //     setTheme('light');
-  //   } else {
-  //     setTheme('dark');
-  //   }
-  // };
+  const { font, setFont } = useContext(SettingContext);
+
   return (
     <div className='w-full p-6 flex flex-col gap-8'>
       <div className='w-96 h-12'>
-        <h1 className='text-xl font-bold '>Color Theme</h1>
-        <p className='text-slate-600'>Choose your color theme:</p>
+        <h1 className='text-xl font-bold '>Font Theme</h1>
+        <p className='text-slate-600'>Choose your font theme:</p>
       </div>
       <div className='w-96 flex flex-col gap-4'>
-        {colorThemes.map((colorTheme) => (
+        {fontThemes.map((fontTheme) => (
           <div
-            key={colorTheme.id}
+            key={fontTheme.id}
             className={`w-full flex items-center justify-between
-                gap-4 p-2 border-2 border-slate-400 rounded-2xl 
+                gap-4 p-2 border-1 border-slate-400 rounded-2xl 
                 dark:hover:bg-slate-500 active:text-slate-900
                 cursor-pointer hover:bg-slate-200 ${
-                  theme === colorTheme.value
+                  font === fontTheme.value
                     ? 'bg-slate-300 dark:bg-slate-700'
                     : ''
                 } transition-all duration-500`}
-            onClick={() => setTheme(colorTheme.value)}
+            onClick={() => setFont(fontTheme.value)}
           >
-            <div className='w-72 flex items-center gap-5'>
+            <div className='w-80 flex items-center gap-5'>
               <div
-                className={`w-12 h-12 border-2 border-slate-400
+                className={`w-12 h-12 border-1 border-slate-400
                    rounded-xl flex items-center justify-center`}
               >
                 <Image
                   className='dark:invert'
-                  src={colorTheme.icon}
-                  alt={colorTheme.alt}
+                  src={fontTheme.icon}
+                  alt={fontTheme.alt}
                   width={32}
                   height={32}
                 />
               </div>
               <div>
-                {colorTheme.name}
-                <p className='text-xs'>{colorTheme.detail}</p>
+                {fontTheme.name}
+                <p className='text-xs'>{fontTheme.detail}</p>
               </div>
             </div>
             <div
               className={`w-5 h-5 border border-slate-400 
                   rounded-full flex items-center justify-center ${
-                    theme === colorTheme.value ? 'bg-blue-500' : ''
+                    font === fontTheme.value ? 'bg-blue-500' : ''
                   } transition-all duration-500`}
             >
               <div
                 className={`w-3 h-3 rounded-full ${
-                  theme === colorTheme.value ? 'bg-white' : ''
+                  font === fontTheme.value ? 'bg-white' : ''
                 } transition-all duration-500`}
               />
             </div>

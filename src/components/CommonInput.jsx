@@ -44,7 +44,7 @@ const CommonInput = ({
           alt='showPassIcon'
           width={20}
           height={20}
-          className='absolute right-2 top-9 cursor-pointer'
+          className='absolute right-2 top-9 cursor-pointer dark:invert'
           onClick={handleShowPassword}
         />
       )}

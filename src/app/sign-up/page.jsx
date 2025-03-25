@@ -79,7 +79,13 @@ const SignUpPage = () => {
             onChange={(e) => setCfPassword(e.target.value)}
           />
           <div className='flex items-center gap-2'>
-            <Image src={InfoIcon} alt='infoIcon' width={20} height={20} />
+            <Image
+              className='dark:invert'
+              src={InfoIcon}
+              alt='infoIcon'
+              width={20}
+              height={20}
+            />
             <span className='text-xs text-slate-500'>
               Password must be at least 8 characters.
             </span>
