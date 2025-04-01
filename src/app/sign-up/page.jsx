@@ -38,7 +38,7 @@ const SignUpPage = () => {
     const res = await fetch('/api/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
+      params: JSON.stringify({ email, password })
     });
     let status = res.status;
     if (status === 201) {

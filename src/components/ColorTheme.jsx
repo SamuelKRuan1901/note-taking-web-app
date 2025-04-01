@@ -6,7 +6,6 @@ import { useTheme } from 'next-themes';
 
 const ColorTheme = () => {
   const { theme, setTheme } = useTheme();
-
   const colorThemes = [
     {
       id: 0,
@@ -34,15 +33,6 @@ const ColorTheme = () => {
     }
   ];
 
-  // const handleChooseTheme = (themeId) => {
-  //   setChosenOption(themeId);
-  //   console.log(chosenOption);
-  //   if (chosenOption === '0') {
-  //     setTheme('light');
-  //   } else {
-  //     setTheme('dark');
-  //   }
-  // };
   return (
     <div className='w-full p-6 flex flex-col gap-8'>
       <div className='w-96 h-12'>

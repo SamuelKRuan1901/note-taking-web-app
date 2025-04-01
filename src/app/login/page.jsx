@@ -48,7 +48,7 @@ const LoginPage = () => {
       )}
       {session.status !== 'authenticated' && (
         <div
-          className={`w-4/5 h-auto min-lg:w-1/3 
+          className={`w-4/5 h-auto min-lg:w-1/3
         flex flex-col item-center justify-center gap-3 border-2 border-slate-300 
         rounded-xl px-6 py-10 transition-all duration-500 ease-in
         ${err ? 'border-red-500 border-2' : ''}

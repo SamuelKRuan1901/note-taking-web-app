@@ -34,7 +34,7 @@ const FontTheme = () => {
     }
   ];
 
-  const { font, setFont } = useContext(SettingContext);
+  const { font, handleChangeFont } = useContext(SettingContext);
 
   return (
     <div className='w-full p-6 flex flex-col gap-8'>
@@ -54,7 +54,7 @@ const FontTheme = () => {
                     ? 'bg-slate-300 dark:bg-slate-700'
                     : ''
                 } transition-all duration-500`}
-            onClick={() => setFont(fontTheme.value)}
+            onClick={() => handleChangeFont(fontTheme.value)}
           >
             <div className='w-80 flex items-center gap-5'>
               <div
