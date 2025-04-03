@@ -8,35 +8,52 @@ import PrimaryButton from '@/components/PrimaryButton';
 import SecondaryButton from '@/components/SecondaryButton';
 import { NoteContext } from '@/contexts/NoteProvider';
 import ConfirmBox from '@/components/ConfirmBox';
+import { toast } from 'react-toastify';
+import { deleteNote } from '@/libs/deleteNote';
+import { archiveNote } from '@/libs/archiveNote';
+import { changeNoteContent } from '@/libs/changeNoteContent';
 
 const NoteSinglePage = () => {
-  const { noteId, data, dateFormate } = useContext(NoteContext);
-  const filterData = data.notes.filter((item) => item.id === noteId);
+  const { noteId, data, dateFormate, getNotes, setNoteId } =
+    useContext(NoteContext);
+  const filterData = data?.filter((item) => item._id === noteId);
   const formattedDate = dateFormate(filterData[0]);
-  const [noteContent, setNoteContent] = useState('');
+  const [noteContent, setNoteContent] = useState(filterData[0].content);
   const [showBtn, setShowBtn] = useState(false);
-  const [changeNoteContent, setChangeNoteContent] = useState('');
+  const [changeContent, setChangeContent] = useState('');
   const [isCancel, setIsCancel] = useState(false);
   const [isSave, setIsSave] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
-  console.log(data.notes[noteId].content);
 
-  const handleArchiveNote = () => {
-    data.notes[noteId].isArchived = true;
-    toast.success('Note archived');
+  const handleArchiveNote = async () => {
+    const archived = await archiveNote(noteId);
+    if (archived) {
+      getNotes();
+      toast.success('Note Archived Successfully');
+    } else {
+      toast.error('Failed to archive note');
+    }
   };
 
   const handleEditNote = (e) => {
     e.preventDefault();
-    setChangeNoteContent(e.target.value);
+    setNoteContent(e.target.value);
     setShowBtn(true);
   };
 
-  const handleConfirmSave = () => {
-    data.notes[noteId].content = changeNoteContent;
-    setChangeNoteContent('');
-    setShowBtn(false);
-    setIsSave(false);
+  console.log(noteContent);
+
+  const handleConfirmSave = async () => {
+    const changed = changeNoteContent(noteId, noteContent);
+
+    if (changed) {
+      setShowBtn(false);
+      setIsSave(false);
+      // setNoteContent(filterData[0].content);
+      toast.success('Note saved successfully');
+    } else {
+      toast.error('Failed to save note');
+    }
   };
 
   const handleConfirmCancel = () => {
@@ -45,15 +62,17 @@ const NoteSinglePage = () => {
     setIsCancel(false);
   };
 
-  const handleConfirmDelete = () => {
-    data.notes.splice(noteId, 1);
-    toast.success('Note deleted');
-    setIsDelete(false);
+  const handleConfirmDelete = async () => {
+    const deleted = await deleteNote(noteId);
+    if (deleted) {
+      setIsDelete(false);
+      getNotes();
+      toast.success('Note deleted');
+      setNoteId(null);
+    } else {
+      toast.error('Failed to delete note');
+    }
   };
-
-  useEffect(() => {
-    setNoteContent(filterData[0].content);
-  });
 
   return (
     <div className='w-full h-full flex text-xs'>
@@ -68,7 +87,7 @@ const NoteSinglePage = () => {
           name='note-text'
           rows={15}
           cols={50}
-          defaultValue={noteContent}
+          value={noteContent}
           className='w-full h-full my-4 border-0 overflow-auto p-3'
           onChange={(e) => handleEditNote(e)}
         ></textarea>

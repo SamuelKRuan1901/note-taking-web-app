@@ -11,8 +11,6 @@ const NotesPage = () => {
   const { font } = useContext(SettingContext);
   const session = useSession();
 
-  console.log(session);
-
   useEffect(() => {
     setScreenSize(window.innerWidth);
     window.addEventListener('resize', () => {

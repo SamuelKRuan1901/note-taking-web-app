@@ -4,7 +4,7 @@ import Logo from '@/assets/images/logo.svg';
 import HomeIcon from '@/assets/images/icon-home.svg';
 import ArchiveIcon from '@/assets/images/icon-archive.svg';
 import TagIcon from '@/assets/images/icon-tag.svg';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import React from 'react';
 import { NoteContext } from '@/contexts/NoteProvider';
 import DesktopHeader from '@/components/DesktopHeader';
@@ -12,11 +12,10 @@ import DesktopContent from '@/components/DesktopContent';
 
 const DesktopNotesPage = () => {
   // const data = require('@/app/api/data.json');
-  const { data, setNoteId, noteId, chosen, setChosen } =
-    useContext(NoteContext);
-
-  const Tags = data.notes.map((note) => note.tags.map((tag) => tag));
-  const uniqueTags = [...new Set(Tags.flat())];
+  const { chosen, setChosen, data } = useContext(NoteContext);
+  const Tags = data?.map((note) => note.tags.map((tag) => tag));
+  console.log(data);
+  const uniqueTags = [...new Set(Tags?.flat())];
 
   // show notes list by ordered
 

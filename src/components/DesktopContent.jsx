@@ -14,9 +14,10 @@ import CreateNote from '@/components/CreateNote';
 import { signOut } from 'next-auth/react';
 import { toast } from 'react-toastify';
 const DesktopContent = () => {
-  const { chosen, noteId, data, setNoteId } = useContext(NoteContext);
-  const filteredNotes = data.notes.filter((note) => note.tags.includes(chosen));
-  const archivedNotes = data.notes.filter((note) => note.isArchived === true);
+  // const data = require('@/app/api/data.json');
+  const { chosen, noteId, setNoteId, data } = useContext(NoteContext);
+  const filteredNotes = data?.filter((note) => note.tags.includes(chosen));
+  const archivedNotes = data?.filter((note) => note.isArchived === true);
   const settingsItems = [
     {
       name: 'Color Theme',
@@ -44,13 +45,13 @@ const DesktopContent = () => {
 
   const handleShowComponents = (chosen) => {
     if (chosen === 'Notes') {
-      return data.notes.map((note) => (
+      return data?.map((note) => (
         <div
           className={`${
-            noteId === note.id ? 'bg-slate-300 dark:bg-slate-700' : ''
+            noteId === note._id ? 'bg-slate-300 dark:bg-slate-700' : ''
           }`}
-          key={note.id}
-          onClick={() => setNoteId(note.id)}
+          key={note._id}
+          onClick={() => setNoteId(note._id)}
         >
           <NoteItem
             title={note.title}
@@ -63,10 +64,10 @@ const DesktopContent = () => {
       return archivedNotes.map((note) => (
         <div
           className={`${
-            noteId === note.id ? 'bg-slate-300 dark:bg-slate-700' : ''
+            noteId === note._id ? 'bg-slate-300 dark:bg-slate-700' : ''
           }`}
-          key={note.id}
-          onClick={() => setNoteId(note.id)}
+          key={note._id}
+          onClick={() => setNoteId(note._id)}
         >
           <NoteItem
             title={note.title}
@@ -122,13 +123,13 @@ const DesktopContent = () => {
       return filteredNotes.map((note) => (
         <div
           className={`${
-            noteId === note.id ? 'bg-slate-300 dark:bg-slate-700' : ''
+            noteId === note._id ? 'bg-slate-300 dark:bg-slate-700' : ''
           }`}
-          key={note.id}
-          onClick={() => setNoteId(note.id)}
+          key={note._id}
+          onClick={() => setNoteId(note._id)}
         >
           <NoteItem
-            key={note.id}
+            key={note._id}
             title={note.title}
             tags={note.tags}
             date={note.lastEdited}
@@ -148,8 +149,12 @@ const DesktopContent = () => {
           {handleShowComponents(chosen)}
         </div>
       </div>
-      {typeof noteId === 'number' && <NoteSinglePage noteId={noteId} />}
-      {typeof noteId === 'string' && <SettingOptionsPage noteId={noteId} />}
+      {noteId && <NoteSinglePage noteId={noteId} />}
+      {noteId === 'Font theme' ||
+        noteId === 'Color theme' ||
+        (noteId === 'Change password' && (
+          <SettingOptionsPage noteId={noteId} />
+        ))}
       {noteId === null && <CreateNote />}
     </div>
   );

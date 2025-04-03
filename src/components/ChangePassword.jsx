@@ -2,45 +2,19 @@ import CommonInput from '@/components/CommonInput';
 import PrimaryButton from '@/components/PrimaryButton';
 import InfoIcon from '@/assets/images/icon-info.svg';
 import Image from 'next/image';
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
+import React, { useContext } from 'react';
+import { SettingContext } from '@/contexts/SettingProvider';
 
 const ChangePassword = () => {
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-
-  const handleChangePassword = async () => {
-    if (!oldPassword || !newPassword || !confirmPassword) {
-      toast.warn('Please fill all fields');
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-    const res = await fetch('api/changePassword', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ oldPassword, newPassword })
-    });
-    if (res.status === 401) {
-      toast.error('Unauthorized');
-      return;
-    }
-    if (res.status === 402) {
-      toast.error('Incorrect password');
-      return;
-    }
-    if (res.status === 500) {
-      toast.error('Internal server error');
-      return;
-    }
-    toast.success('Password changed successfully');
-    window.location.reload();
-  };
+  const {
+    oldPassword,
+    setOldPassword,
+    newPassword,
+    setNewPassword,
+    confirmPassword,
+    setConfirmPassword,
+    handleChangePassword
+  } = useContext(SettingContext);
 
   return (
     <div className='w-full p-6 flex flex-col gap-8'>
