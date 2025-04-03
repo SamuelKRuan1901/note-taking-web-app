@@ -34,7 +34,7 @@ const FontTheme = () => {
     }
   ];
 
-  const { font, handleChangeFont } = useContext(SettingContext);
+  const { font, handleChangeFont, isLoading } = useContext(SettingContext);
 
   return (
     <div className='w-full p-6 flex flex-col gap-8'>
@@ -90,6 +90,11 @@ const FontTheme = () => {
         ))}
         <div className='flex justify-end w-full'></div>
       </div>
+      {isLoading && (
+        <div className='w-screen h-screen bg-white dark:bg-slate-800 fixed flex top-0 right-0 items-center justify-center'>
+          <p className='text-xl'>Loading...</p>
+        </div>
+      )}
     </div>
   );
 };

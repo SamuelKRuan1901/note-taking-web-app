@@ -1,15 +1,15 @@
 import mongoose from 'mongoose';
 const noteSchema = new mongoose.Schema(
   {
-    user: {
+    userEmail: {
       required: true,
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: 'User'
     },
     title: { required: true, type: String },
     content: { required: true, type: String },
     tags: [{ type: String }],
-    lastEdited: { type: string, default: Date.now },
+    lastEdited: { type: String, required: true },
     isArchived: { type: Boolean, default: false }
   },
   { timestamps: true }

@@ -1,13 +1,51 @@
 'use client';
 import { createContext, useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 export const SettingContext = createContext();
 
 export const SettingProvider = ({ children }) => {
   const [font, setFont] = useState('sans');
   const [color, setColor] = useState('light');
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChangePassword = async () => {
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      toast.warn('Please fill all fields');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+    const res = await fetch('api/changePassword', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ oldPassword, newPassword })
+    });
+    if (res.status === 401) {
+      toast.error('Unauthorized');
+      return;
+    }
+    if (res.status === 402) {
+      toast.error('Incorrect password');
+      return;
+    }
+    if (res.status === 500) {
+      toast.error('Internal server error');
+      return;
+    }
+    toast.success('Password changed successfully');
+    window.location.reload();
+  };
 
   const handleChangeFont = async (newFont) => {
+    setIsLoading(true);
     setFont(newFont);
     console.log(newFont);
     await fetch('api/user', {
@@ -17,6 +55,8 @@ export const SettingProvider = ({ children }) => {
       },
       body: JSON.stringify({ newFont })
     });
+    await getUserInfo();
+    setIsLoading(false);
   };
 
   const getUserInfo = async () => {
@@ -34,7 +74,6 @@ export const SettingProvider = ({ children }) => {
       })
       .then((data) => {
         if (data) {
-          console.log(data.user);
           setFont(data.user.fontTheme);
           setColor(data.user.colorTheme);
         }
@@ -52,7 +91,15 @@ export const SettingProvider = ({ children }) => {
     setFont,
     color,
     setColor,
-    handleChangeFont
+    handleChangeFont,
+    oldPassword,
+    setOldPassword,
+    newPassword,
+    setNewPassword,
+    confirmPassword,
+    setConfirmPassword,
+    handleChangePassword,
+    isLoading
   };
   return (
     <SettingContext.Provider value={values}>{children}</SettingContext.Provider>

@@ -1,5 +1,5 @@
 'use client';
-import { createContext, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
 export const NoteContext = createContext();
 
@@ -7,7 +7,9 @@ export const NoteProvider = ({ children }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [noteId, setNoteId] = useState(null);
   const [chosen, setChosen] = useState('Notes');
-  const data = require('@/app/api/data.json');
+  const [data, setData] = useState([]);
+  const [search, setSearch] = useState('');
+  // const data = require('@/app/api/data.json');
 
   // create a note
   const [title, setTitle] = useState('');
@@ -15,6 +17,7 @@ export const NoteProvider = ({ children }) => {
   const [tags, setTags] = useState('');
   const [archive, setArchive] = useState(false);
   const [isCancel, setIsCancel] = useState(false);
+  const [date, setDate] = useState();
 
   const dateFormate = (note) => {
     const editingDate = new Date(note?.lastEdited);
@@ -22,15 +25,40 @@ export const NoteProvider = ({ children }) => {
     return editingDate.toLocaleString('en-GB', options);
   };
 
+  const getNotes = async () => {
+    try {
+      await fetch('api/notes')
+        .then((res) => {
+          if (!res.ok) return null;
+          return res.json();
+        })
+        .then((notes) => {
+          console.log(notes);
+          setData(notes);
+        });
+    } catch (error) {
+      console.error('Error fetching notes:', error);
+    }
+  };
+
+  useEffect(() => {
+    getNotes();
+  }, []);
+
   const values = {
+    data,
+    setData,
+    date,
+    setDate,
     isEditing,
     setIsEditing,
-    data,
     noteId,
     setNoteId,
     dateFormate,
     chosen,
     setChosen,
+    search,
+    setSearch,
     title,
     setTitle,
     content,
@@ -40,7 +68,8 @@ export const NoteProvider = ({ children }) => {
     archive,
     setArchive,
     isCancel,
-    setIsCancel
+    setIsCancel,
+    getNotes
   };
   return <NoteContext.Provider value={values}>{children}</NoteContext.Provider>;
 };

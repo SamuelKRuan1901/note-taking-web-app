@@ -5,7 +5,7 @@ import SettingsIcon from '@/assets/images/icon-settings.svg';
 import Image from 'next/image';
 
 const DesktopHeader = () => {
-  const { chosen, setChosen } = useContext(NoteContext);
+  const { chosen, setChosen, search, setSearch } = useContext(NoteContext);
 
   // show title by order
   const handleShowPageTitle = (chosen) => {
@@ -14,7 +14,10 @@ const DesktopHeader = () => {
     } else if (chosen === 'Archived') {
       return 'Archived';
     } else if (chosen === 'Search') {
-      return 'Search';
+      return `Showing results for: ${
+        search.charAt(0).toUpperCase() +
+        search.slice(1, search.length).toLowerCase()
+      }`;
     } else if (chosen === 'Settings') {
       return 'Settings';
     } else {
@@ -22,15 +25,21 @@ const DesktopHeader = () => {
     }
   };
 
+  const handleSearchNotes = (event) => {
+    setSearch(event.target.value);
+  };
+
   return (
     <div className='w-full h-20 flex items-center justify-between px-6 py-3 border-b border-l border-slate-400'>
       <div className='text-lg font-bold'>{handleShowPageTitle(chosen)}</div>
       <div className='flex items-center justify-center gap-4 pr-4'>
-        <div className='relative'>
+        <div className='relative' onClick={() => setChosen('Search')}>
           <input
-            type='search'
-            className='w-40 h-10 border border-slate-400 rounded-md pl-3 pr-10 hover:bg-slate-200 transition-all duration-300'
+            type='text'
+            className='w-40 h-10 border border-slate-400 rounded-md pl-3 pr-10 dark:hover:bg-slate-600 hover:bg-slate-200 transition-all duration-300'
             placeholder='Search...'
+            value={search}
+            onChange={handleSearchNotes}
           />
           <Image
             src={SearchIcon}

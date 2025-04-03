@@ -14,21 +14,41 @@ import CreateNote from '@/components/CreateNote';
 import { signOut } from 'next-auth/react';
 import { toast } from 'react-toastify';
 const DesktopContent = () => {
-  const { chosen, noteId, data, setNoteId } = useContext(NoteContext);
-  const filteredNotes = data.notes.filter((note) => note.tags.includes(chosen));
-  const archivedNotes = data.notes.filter((note) => note.isArchived === true);
+  // const data = require('@/app/api/data.json');
+  const {
+    chosen,
+    noteId,
+    setNoteId,
+    data,
+    search,
+    setIsEditing,
+    isEditing,
+    setIsCancel
+  } = useContext(NoteContext);
+  const filteredNotes = data?.filter((note) => note.tags.includes(chosen));
+  const filteredNotesWithSearch = data?.filter((note) =>
+    note.tags.includes(
+      search.charAt(0).toUpperCase() +
+        search.slice(1, search.length).toLowerCase()
+    )
+  );
+  const archivedNotes = data?.filter((note) => note.isArchived === true);
+  const singleNote = data?.filter((item) => item._id === noteId)[0];
   const settingsItems = [
     {
+      id: 1,
       name: 'Color Theme',
       icon: SunIcon,
       alt: 'themeIcon'
     },
     {
+      id: 2,
       name: 'Font Theme',
       icon: FontIcon,
       alt: 'fontIcon'
     },
     {
+      id: 3,
       name: 'Change Password',
       icon: LockIcon,
       alt: 'lockIcon'
@@ -41,16 +61,25 @@ const DesktopContent = () => {
     toast.success('Logout success');
     redirect('/login');
   };
+  const handleChoseNote = (note) => {
+    if (note !== noteId && isEditing === true) {
+      toast.error('Cannot switch notes while editing');
+      setIsCancel(true);
+      return;
+    }
+    setNoteId(note);
+    setIsEditing(false);
+  };
 
   const handleShowComponents = (chosen) => {
     if (chosen === 'Notes') {
-      return data.notes.map((note) => (
+      return data?.map((note) => (
         <div
           className={`${
-            noteId === note.id ? 'bg-slate-300 dark:bg-slate-700' : ''
-          }`}
-          key={note.id}
-          onClick={() => setNoteId(note.id)}
+            noteId === note._id ? 'bg-slate-300 dark:bg-slate-700' : ''
+          } select-none`}
+          key={note._id}
+          onClick={() => handleChoseNote(note._id)}
         >
           <NoteItem
             title={note.title}
@@ -63,10 +92,10 @@ const DesktopContent = () => {
       return archivedNotes.map((note) => (
         <div
           className={`${
-            noteId === note.id ? 'bg-slate-300 dark:bg-slate-700' : ''
+            noteId === note._id ? 'bg-slate-300 dark:bg-slate-700' : ''
           }`}
-          key={note.id}
-          onClick={() => setNoteId(note.id)}
+          key={note._id}
+          onClick={() => handleChoseNote(note._id)}
         >
           <NoteItem
             title={note.title}
@@ -87,7 +116,7 @@ const DesktopContent = () => {
                   noteId === item.name ? 'bg-slate-300 dark:bg-slate-700' : ''
                 }`}
               key={item.name}
-              onClick={() => setNoteId(item.name)}
+              onClick={() => setNoteId(item.id)}
             >
               <Image
                 className='dark:invert'
@@ -118,17 +147,33 @@ const DesktopContent = () => {
           </div>
         </>
       );
+    } else if (chosen === 'Search') {
+      return filteredNotesWithSearch.map((note) => (
+        <div
+          className={`${
+            noteId === note._id ? 'bg-slate-300 dark:bg-slate-700' : ''
+          }`}
+          key={note._id}
+          onClick={() => setNoteId(note._id)}
+        >
+          <NoteItem
+            title={note.title}
+            tags={note.tags}
+            date={note.lastEdited}
+          />
+        </div>
+      ));
     } else {
       return filteredNotes.map((note) => (
         <div
           className={`${
-            noteId === note.id ? 'bg-slate-300 dark:bg-slate-700' : ''
+            noteId === note._id ? 'bg-slate-300 dark:bg-slate-700' : ''
           }`}
-          key={note.id}
-          onClick={() => setNoteId(note.id)}
+          key={note._id}
+          onClick={() => handleChoseNote(note._id)}
         >
           <NoteItem
-            key={note.id}
+            key={note._id}
             title={note.title}
             tags={note.tags}
             date={note.lastEdited}
@@ -148,8 +193,8 @@ const DesktopContent = () => {
           {handleShowComponents(chosen)}
         </div>
       </div>
-      {typeof noteId === 'number' && <NoteSinglePage noteId={noteId} />}
-      {typeof noteId === 'string' && <SettingOptionsPage noteId={noteId} />}
+      {typeof noteId === 'string' && <NoteSinglePage singleNote={singleNote} />}
+      {typeof noteId === 'number' && <SettingOptionsPage noteId={noteId} />}
       {noteId === null && <CreateNote />}
     </div>
   );

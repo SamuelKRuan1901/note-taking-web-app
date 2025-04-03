@@ -3,31 +3,25 @@ import SecondaryButton from '@/components/SecondaryButton';
 import Image from 'next/image';
 import TagIcon from '@/assets/images/icon-tag.svg';
 import ClockIcon from '@/assets/images/icon-clock.svg';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { toast } from 'react-toastify';
 import { NoteContext } from '@/contexts/NoteProvider';
+import ConfirmBox from '@/components/ConfirmBox';
 
 const CreateNote = () => {
-  const {
-    data,
-    title,
-    setTitle,
-    content,
-    setContent,
-    tags,
-    setTags,
-    isCancel,
-    setIsCancel
-  } = useContext(NoteContext);
+  const { title, setTitle, content, setContent, tags, setTags, getNotes } =
+    useContext(NoteContext);
+  const [isCancel, setIsCancel] = useState(false);
+  const [isSave, setIsSave] = useState(false);
 
-  const handelSaveNote = () => {
+  const handleSaveNote = async () => {
     if (!title || !content || !tags) {
       toast.error('all fields are required');
       return;
     }
+    const newDate = new Date();
     const newNote = {
-      id: data.notes[data.notes.length - 1].id + 1,
-      title: title,
+      title: title.charAt(0).toUpperCase() + title.slice(1, title.length),
       content: content,
       tags: tags
         .split(',')
@@ -36,14 +30,35 @@ const CreateNote = () => {
             tag.trim().charAt(0).toUpperCase() +
             tag.trim().slice(1).toLowerCase()
         ),
-      lastEdited: new Date().toISOString(),
+      lastEdited: newDate.toISOString(),
       isArchived: false
     };
-    data.notes.push(newNote);
-    setTitle('');
-    setContent('');
-    setTags('');
-    toast.success('Saved Note');
+    const res = await fetch('/api/notes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newNote)
+    });
+
+    if (res.status === 200) {
+      setTitle('');
+      setContent('');
+      setTags('');
+      getNotes();
+      toast.success('Created a new note');
+      setIsSave(false);
+    } else {
+      toast.error('Failed to save note');
+      setIsSave(false);
+      return;
+    }
+  };
+  const handleSave = () => {
+    if (!title || !content || !tags) {
+      setIsSave(false);
+      toast.error('Please fill all fields');
+      return;
+    }
+    setIsSave(true);
   };
   const handleCancel = () => {
     if (!title || !content || !tags) {
@@ -63,7 +78,7 @@ const CreateNote = () => {
   return (
     <div className='w-full h-full flex text-xs relative'>
       {/* add note header area */}
-      <form className='w-full h-full p-3 pb-3 overflow-auto'>
+      <div className='w-full h-full p-3 pb-3 overflow-auto'>
         <div className='w-full flex flex-col gap-3 pb-4 border-b border-slate-400'>
           <input
             type='text'
@@ -107,32 +122,34 @@ const CreateNote = () => {
           name='note-text'
           rows={15}
           cols={50}
-          className='w-full h-full my-4 border-0 overflow-auto p-3'
+          className='w-full h-auto my-4 border-0 overflow-auto p-3  bg-transparent resize-none whitespace-pre-wrap'
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder='Start typing your note here...'
         ></textarea>
-      </form>
+      </div>
       <div className='w-44 py-2 px-2 border-l border-slate-400 flex flex-col justify-between gap-4'>
         <div className='w-full py-2 border-slate-400 flex flex-col gap-1'>
-          <PrimaryButton content={'Save Note'} onClick={handelSaveNote} />
+          <PrimaryButton content={'Save Note'} onClick={handleSave} />
           <SecondaryButton content={'Cancel'} onClick={handleCancel} />
         </div>
         {/* )} */}
       </div>
       {isCancel && (
-        <div className='w-screen h-screen bg-slate-800/80 fixed top-0 left-0 flex justify-center items-center'>
-          <div className='w-96 h-20 bg-white flex gap-4 p-4 rounded-md'>
-            <PrimaryButton
-              content={'Confirm Cancel'}
-              onClick={handleConfirmCancel}
-            />
-            <SecondaryButton
-              content={'Continue Editing'}
-              onClick={() => setIsCancel(false)}
-            />
-          </div>
-        </div>
+        <ConfirmBox
+          confirm={'Discard changes'}
+          cancel={'Keep Editing'}
+          handleConfirm={handleConfirmCancel}
+          cancelConfirm={() => setIsCancel(false)}
+        />
+      )}
+      {isSave && (
+        <ConfirmBox
+          confirm={'Confirm save'}
+          cancel={'Continue Editing'}
+          handleConfirm={handleSaveNote}
+          cancelConfirm={() => setIsSave(false)}
+        />
       )}
     </div>
   );

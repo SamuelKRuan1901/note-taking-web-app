@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import React from 'react';
 
-const BorderButton = ({ content, icon = {} }) => {
+const BorderButton = ({ content, icon = {}, ...props }) => {
   return (
     <button
       className={`w-full h-10 px-2 border-2 border-slate-600 
@@ -9,6 +9,7 @@ const BorderButton = ({ content, icon = {} }) => {
         bg-slate-100 hover:bg-slate-400 cursor-pointer 
         flex items-center justify-center gap-2 transition-colors 
         duration-300`}
+      {...props}
     >
       {icon && <Image src={icon} alt={'btnIcon'} width={15} height={15} />}
       {content}

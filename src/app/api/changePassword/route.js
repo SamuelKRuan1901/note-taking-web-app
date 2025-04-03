@@ -21,8 +21,6 @@ export async function POST(req) {
   const salt = bcrypt.genSaltSync(10);
   const hashedPassword = bcrypt.hashSync(newPassword, salt);
   user.password = hashedPassword;
-  console.log(hashedPassword);
   await user.save();
-
   return new Response({ status: 200 });
 }

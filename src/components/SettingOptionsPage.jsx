@@ -7,11 +7,11 @@ const SettingOptionsPage = ({ noteId }) => {
   const handleShowComponents = (noteId) => {
     console.log(noteId);
     switch (noteId) {
-      case 'Color Theme':
+      case 1:
         return <ColorTheme />;
-      case 'Font Theme':
+      case 2:
         return <FontTheme />;
-      case 'Change Password':
+      case 3:
         return <ChangePassword />;
       default:
         return <ColorTheme />;
