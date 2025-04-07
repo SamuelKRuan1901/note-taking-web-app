@@ -20,9 +20,9 @@ const NotesPage = () => {
 
   return (
     <section
-      className={`w-screen h-screen flex justify-center 
-      items-center min-lg:my-0 min-lg:px-0 my-16 
-      px-4 rounded-md overflow-x-hidden 
+      className={`w-screen h-full flex justify-center 
+      items-center min-lg:my-0 min-lg:px-0 mb-12
+      rounded-md overflow-x-hidden 
       ${font === 'sans' && 'font-sans'} 
       ${font === 'serif' && 'font-serif'}
       ${font === 'mono' && 'font-mono'}`}

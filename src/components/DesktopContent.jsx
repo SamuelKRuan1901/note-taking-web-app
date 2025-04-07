@@ -7,8 +7,8 @@ import NoteItem from '@/components/NoteItem';
 import SunIcon from '@/assets/images/icon-sun.svg';
 import FontIcon from '@/assets/images/icon-font.svg';
 import LockIcon from '@/assets/images/icon-lock.svg';
+import StickyNote from '@/assets/images/sticky-note.png';
 import Image from 'next/image';
-import { redirect } from 'next/navigation';
 import SettingOptionsPage from '@/components/SettingOptionsPage';
 import CreateNote from '@/components/CreateNote';
 import { signOut } from 'next-auth/react';
@@ -59,7 +59,6 @@ const DesktopContent = () => {
     // logout logic and redirect to Login page
     signOut();
     toast.success('Logout success');
-    redirect('/login');
   };
   const handleChoseNote = (note) => {
     if (note !== noteId && isEditing === true) {
@@ -142,7 +141,7 @@ const DesktopContent = () => {
                 width={20}
                 height={20}
               />
-              Logout
+              {'Logout'}
             </div>
           </div>
         </>
@@ -185,17 +184,32 @@ const DesktopContent = () => {
   return (
     <div className='w-full h-full flex justify-start items-start'>
       <div className='w-56 h-full flex flex-col gap-1 pt-4 px-2 border-r border-l border-slate-400'>
-        <PrimaryButton
-          content={'Create New Note'}
-          onClick={() => setNoteId(null)}
-        />
+        {chosen !== 'Settings' && (
+          <PrimaryButton
+            content={'Create New Note'}
+            onClick={() => setNoteId(null)}
+          />
+        )}
         <div className='w-52 h-screen mt-2 overflow-y-auto overflow-x-hidden'>
           {handleShowComponents(chosen)}
         </div>
       </div>
       {typeof noteId === 'string' && <NoteSinglePage singleNote={singleNote} />}
-      {typeof noteId === 'number' && <SettingOptionsPage noteId={noteId} />}
+      {[1, 2, 3].includes(noteId) && <SettingOptionsPage noteId={noteId} />}
       {noteId === null && <CreateNote />}
+      {noteId === 0 && (
+        <div className='w-full h-full text-xl font-semibold flex flex-col items-center justify-center gap-10 py-20'>
+          <Image
+            className='dark:invert-50'
+            src={StickyNote}
+            alt={'StickyNote'}
+            priority={true}
+            width={'auto'}
+            height={'auto'}
+          />
+          Keep notes close, keep ideas closer.
+        </div>
+      )}
     </div>
   );
 };

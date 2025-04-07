@@ -4,7 +4,7 @@ const NoteItem = ({ title, tags, date }) => {
   const formattedDate = editingDate.toLocaleString('en-GB', options);
   return (
     <div
-      className={`w-full h-auto px-3 py-4 flex flex-col gap-4 border-b 
+      className={`w-full h-auto px-3 py-4 flex flex-col gap-2 border-b 
       border-slate-400 cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-700
         transition-all duration-500`}
     >
@@ -13,13 +13,13 @@ const NoteItem = ({ title, tags, date }) => {
         {tags?.map((item, index) => (
           <div
             key={index}
-            className='bg-slate-200 px-2 py-0.5 rounded-lg text-slate-600 text-xs'
+            className='bg-slate-200 dark:text-slate-300 dark:bg-slate-800 px-2 py-0.5 rounded-lg text-slate-600 text-xs'
           >
             {item}
           </div>
         ))}
       </div>
-      <div className='text-xs text-slate-400 tracking-wider'>
+      <div className='text-xs text-slate-400 dark:text-slate-200 tracking-wider'>
         {formattedDate}
       </div>
     </div>

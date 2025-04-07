@@ -14,10 +14,12 @@ const LoginPage = () => {
   const [err, setErr] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     if (!email || !password) {
       setErr(true);
       toast.error('Please fill all fields');
@@ -28,8 +30,11 @@ const LoginPage = () => {
     try {
       await signIn('credentials', { email, password });
       toast.success('Login success');
+      window.location.href = '/notes';
     } catch (error) {
       toast.error('Failed to login');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -84,7 +89,11 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
               isLoginPage={true}
             />
-            <PrimaryButton content={'Login'} type={'submit'} />
+            <PrimaryButton
+              content={isLoading ? 'Loading...' : 'Login'}
+              disabled={isLoading}
+              type={'submit'}
+            />
           </form>
           <hr className='text-slate-500' />
           <form className='flex flex-col gap-5 items-center justify-center'>

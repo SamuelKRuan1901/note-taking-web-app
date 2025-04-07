@@ -12,10 +12,37 @@ import DesktopContent from '@/components/DesktopContent';
 
 const DesktopNotesPage = () => {
   // const data = require('@/app/api/data.json');
-  const { chosen, setChosen, data } = useContext(NoteContext);
+  const { chosen, setChosen, data, setNoteId, chosenTags, setChosenTags } =
+    useContext(NoteContext);
   const Tags = data?.map((note) => note.tags.map((tag) => tag));
-  console.log(data);
   const uniqueTags = [...new Set(Tags?.flat())];
+
+  const handleChoseAllNote = () => {
+    if (chosen === 'Settings') {
+      setChosen('Notes');
+      setNoteId(0);
+      return;
+    }
+    setChosen('Notes');
+  };
+  const handleChoseArchived = () => {
+    if (chosen === 'Settings') {
+      setChosen('Archived');
+      setNoteId(0);
+      return;
+    }
+    setChosen('Archived');
+  };
+  const handleChoseTag = (chosenTag) => {
+    if (chosen === 'Settings') {
+      setChosen(chosenTag);
+      setChosenTags(chosenTag);
+      setNoteId(0);
+      return;
+    }
+    setChosen(chosenTag);
+    setChosenTags(chosenTag);
+  };
 
   // show notes list by ordered
 
@@ -28,8 +55,9 @@ const DesktopNotesPage = () => {
             className='dark:invert'
             src={Logo}
             alt='Logo'
-            width={80}
-            height={36}
+            priority={false}
+            width={'auto'}
+            height={'auto'}
           />
         </div>
         <div className='flex flex-col gap-1 pb-5 border-b border-slate-500'>
@@ -40,14 +68,15 @@ const DesktopNotesPage = () => {
                    ${
                      chosen === 'Notes' ? 'bg-slate-200 dark:bg-slate-700 ' : ''
                    }`}
-            onClick={() => setChosen('Notes')}
+            onClick={handleChoseAllNote}
           >
             <Image
               className='dark:invert'
               src={HomeIcon}
               alt={'HomeIcon'}
-              width={15}
-              height={15}
+              priority={false}
+              width={'auto'}
+              height={'auto'}
             />
             All Notes
           </div>
@@ -60,14 +89,15 @@ const DesktopNotesPage = () => {
                        ? 'bg-slate-200 dark:bg-slate-700'
                        : ''
                    }`}
-            onClick={() => setChosen('Archived')}
+            onClick={handleChoseArchived}
           >
             <Image
               className='dark:invert'
               src={ArchiveIcon}
               alt={'ArchiveIcon'}
-              width={15}
-              height={15}
+              priority={false}
+              width={'auto'}
+              height={'auto'}
             />
             Archived Notes
           </div>
@@ -82,14 +112,15 @@ const DesktopNotesPage = () => {
                 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md 
                 cursor-pointer transition-all duration-300 text-xs
                 ${chosen === tag ? 'bg-slate-200 dark:bg-slate-700' : ''}`}
-              onClick={() => setChosen(tag)}
+              onClick={() => handleChoseTag(tag)}
             >
               <Image
                 className='dark:invert'
                 src={TagIcon}
                 alt={'TagIcon'}
-                width={15}
-                height={15}
+                priority={false}
+                width={'auto'}
+                height={'auto'}
               />
 
               {tag}

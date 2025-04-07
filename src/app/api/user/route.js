@@ -43,7 +43,7 @@ export async function POST(req) {
   if (!session) {
     return new Response('Unauthorized', { status: 401 });
   }
-  const email = session.user.email;
+  const email = session?.user.email;
   if (!email) {
     return new Response('Missing email', { status: 400 });
   }

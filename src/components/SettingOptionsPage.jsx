@@ -5,7 +5,6 @@ import React from 'react';
 
 const SettingOptionsPage = ({ noteId }) => {
   const handleShowComponents = (noteId) => {
-    console.log(noteId);
     switch (noteId) {
       case 1:
         return <ColorTheme />;

@@ -11,7 +11,15 @@ const BorderButton = ({ content, icon = {}, ...props }) => {
         duration-300`}
       {...props}
     >
-      {icon && <Image src={icon} alt={'btnIcon'} width={15} height={15} />}
+      {icon && (
+        <Image
+          src={icon}
+          alt={'btnIcon'}
+          priority={false}
+          width={'auto'}
+          height={'auto'}
+        />
+      )}
       {content}
     </button>
   );

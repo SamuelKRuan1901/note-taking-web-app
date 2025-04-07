@@ -5,7 +5,7 @@ export const NoteContext = createContext();
 
 export const NoteProvider = ({ children }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [noteId, setNoteId] = useState(null);
+  const [noteId, setNoteId] = useState(0);
   const [chosen, setChosen] = useState('Notes');
   const [data, setData] = useState([]);
   const [search, setSearch] = useState('');
@@ -18,6 +18,7 @@ export const NoteProvider = ({ children }) => {
   const [archive, setArchive] = useState(false);
   const [isCancel, setIsCancel] = useState(false);
   const [date, setDate] = useState();
+  const [chosenTags, setChosenTags] = useState('');
 
   const dateFormate = (note) => {
     const editingDate = new Date(note?.lastEdited);
@@ -33,7 +34,6 @@ export const NoteProvider = ({ children }) => {
           return res.json();
         })
         .then((notes) => {
-          console.log(notes);
           setData(notes);
         });
     } catch (error) {
@@ -57,6 +57,8 @@ export const NoteProvider = ({ children }) => {
     dateFormate,
     chosen,
     setChosen,
+    chosenTags,
+    setChosenTags,
     search,
     setSearch,
     title,

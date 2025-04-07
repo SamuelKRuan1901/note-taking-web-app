@@ -11,7 +11,7 @@ export async function POST(req) {
   const session = await getServerSession();
   try {
     await mongoose.connect(process.env.MONGO_DB);
-    const user = await User.findOne({ email: session.user.email });
+    const user = await User.findOne({ email: session?.user.email });
     if (!user) {
       return Response.json({ message: 'User not found' }, { status: 404 });
     }
@@ -35,8 +35,7 @@ export async function GET() {
   try {
     await mongoose.connect(process.env.MONGO_DB);
     const session = await getServerSession();
-    const notes = await Note.find({ userEmail: session.user.email });
-    console.log(notes);
+    const notes = await Note.find({ userEmail: session?.user.email });
     return Response.json(notes, { status: 200 });
   } catch (error) {
     console.error(error);
@@ -52,7 +51,7 @@ export async function DELETE() {
     const session = await getServerSession();
     const note = await Note.findOneAndDelete({
       _id: id,
-      userEmail: session.user.email
+      userEmail: session?.user?.email
     });
     if (!note) {
       return Response.json({ message: 'Note not found' }, { status: 404 });

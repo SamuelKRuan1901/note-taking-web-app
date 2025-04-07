@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang='en' suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-slate-900 `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white dark:bg-slate-900 w-screen`}
       >
         <AuthProvider>
           <SettingProvider>
@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
               defaultTheme='system'
             >
               <NoteProvider>
-                <main>{children}</main>
+                <main className='w-screen'>{children}</main>
               </NoteProvider>
             </ThemeProvider>
           </SettingProvider>

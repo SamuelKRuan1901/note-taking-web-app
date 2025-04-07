@@ -1,39 +1,34 @@
-'use client';
-import BorderButton from '@/components/BorderButton';
+import arrowLeftIcon from '@/assets/images/icon-arrow-left.svg';
 import ArchiveIcon from '@/assets/images/icon-archive.svg';
 import DeleteIcon from '@/assets/images/icon-delete.svg';
-import StatusIcon from '@/assets/images/icon-status.svg';
 import Image from 'next/image';
+import { useContext, useState } from 'react';
+import { NoteContext } from '@/contexts/NoteProvider';
+import MobileHeader from '@/components/MobileHeader';
+import StatusIcon from '@/assets/images/icon-status.svg';
 import TagIcon from '@/assets/images/icon-tag.svg';
 import ClockIcon from '@/assets/images/icon-clock.svg';
-import { useContext, useState } from 'react';
-import PrimaryButton from '@/components/PrimaryButton';
-import SecondaryButton from '@/components/SecondaryButton';
-import { NoteContext } from '@/contexts/NoteProvider';
 import ConfirmBox from '@/components/ConfirmBox';
 import { toast } from 'react-toastify';
 import { deleteNote } from '@/libs/deleteNote';
 import { archiveNote } from '@/libs/archiveNote';
 import { changeNoteContent } from '@/libs/changeNoteContent';
-import NoteHeader from '@/components/NoteHeader';
 
-const NoteSinglePage = ({ singleNote }) => {
+const MobileNoteSinglePage = () => {
   const {
     noteId,
-    dateFormate,
-    getNotes,
     setNoteId,
+    data,
+    dateFormate,
+    isCancel,
+    setIsCancel,
     isEditing,
     setIsEditing,
-    isCancel,
-    setIsCancel
+    getNotes
   } = useContext(NoteContext);
-
+  const singleNote = data?.filter((item) => item._id === noteId)[0];
   const formattedDate = dateFormate(singleNote);
   const archived = singleNote?.isArchived;
-  const viewTitle = singleNote?.title;
-  const viewTags = singleNote?.tags;
-  const viewContent = singleNote?.content;
   const [title, setTitle] = useState(singleNote?.title);
   const [tags, setTags] = useState(
     singleNote?.tags.toString().replace(/,(?=\S)/g, ', ')
@@ -72,11 +67,6 @@ const NoteSinglePage = ({ singleNote }) => {
     setIsEditing(true);
   };
   const handleConfirmSave = async () => {
-    if (title && tags && noteContent) {
-      setIsSave(false);
-      setIsEditing(false);
-      return;
-    }
     const changed = changeNoteContent(noteId, title, tags, noteContent);
     if (changed) {
       setIsSave(false);
@@ -88,7 +78,7 @@ const NoteSinglePage = ({ singleNote }) => {
       toast.error('Failed to save note');
       return;
     }
-    window.setTimeout(() => window.location.reload(), 1000);
+    // window.setTimeout(() => window.location.reload(), 1000);
   };
   const handleConfirmCancel = () => {
     setNoteContent(singleNote.content);
@@ -106,28 +96,88 @@ const NoteSinglePage = ({ singleNote }) => {
       toast.error('Failed to delete note');
     }
   };
-
+  const handleBackToNotesMenu = () => {
+    if (isEditing == true) {
+      setIsCancel(true);
+      return;
+    }
+    setNoteId(0);
+  };
   return (
-    <div className='w-full h-full flex text-xs'>
-      {isEditing === false && (
-        <div className='w-full h-full p-3 overflow-auto  border-b border-slate-400'>
-          <NoteHeader
-            title={viewTitle}
-            tags={viewTags}
-            date={formattedDate}
-            archived={singleNote?.isArchived}
-            editHeader={() => setIsEditing(true)}
+    <div className='w-screen h-auto absolute top-0 right-0 bg-white dark:bg-slate-900'>
+      <MobileHeader />
+      <div className='flex items-center justify-between p-3 border-b border-slate-500'>
+        <div
+          className={`flex items-center justify-center w-18
+                gap-1 p-1 hover:bg-slate-300 dark:hover:bg-slate-800 
+                cursor-pointer rounded-md text-xs`}
+          onClick={handleBackToNotesMenu}
+        >
+          <Image
+            className='dark:invert'
+            src={arrowLeftIcon}
+            alt={'arrowLeft'}
+            priority={false}
+            width={'auto'}
+            height={'auto'}
           />
-          <p
-            className='w-full h-96 my-4 border-0 overflow-auto p-3 bg-transparent resize-none whitespace-pre-wrap'
-            onClick={() => setIsEditing(true)}
-          >
-            {viewContent}
-          </p>
+          Back
         </div>
-      )}
-      {isEditing === true && (
-        <div className='w-full h-full p-3 overflow-auto border-b border-slate-400'>
+        <div className='flex items-center justify-center gap-1'>
+          <div className='flex items-center justify-center gap-1'>
+            <div
+              className={`flex items-center justify-center w-8
+                gap-1 p-1 hover:bg-slate-300 dark:hover:bg-slate-800 
+                cursor-pointer rounded-md text-xs`}
+              onClick={() => setIsDelete(true)}
+            >
+              <Image
+                className='dark:invert'
+                src={DeleteIcon}
+                alt={'deleteIcon'}
+                priority={false}
+                width={'auto'}
+                height={'auto'}
+              />
+            </div>
+            <div
+              className={`flex items-center justify-center w-8
+                gap-1 py-1 hover:bg-slate-300 dark:hover:bg-slate-800 
+                cursor-pointer rounded-md text-xs`}
+              onClick={handleArchiveNote}
+            >
+              <Image
+                className='dark:invert'
+                src={ArchiveIcon}
+                alt={'archiveIcon'}
+                priority={false}
+                width={'auto'}
+                height={'auto'}
+              />
+            </div>
+          </div>
+          <div className='flex items-center justify-center'>
+            <div
+              className={`flex items-center justify-center w-20
+                gap-1 p-1 hover:bg-slate-300 dark:hover:bg-slate-800 
+                cursor-pointer rounded-md text-xs`}
+              onClick={() => setIsCancel(true)}
+            >
+              Cancel
+            </div>
+            <div
+              className={`flex items-center justify-center w-18
+                gap-1 py-1 hover:bg-slate-300 dark:hover:bg-slate-800 
+                cursor-pointer rounded-md text-blue-600 text-xs`}
+              onClick={() => setIsSave(true)}
+            >
+              Save Note
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div className='w-full h-full p-3 overflow-auto'>
           {/* note header */}
           <div className='w-full flex flex-col gap-3 pb-4 border-b border-slate-400'>
             <input
@@ -142,8 +192,9 @@ const NoteSinglePage = ({ singleNote }) => {
                 className='dark:invert'
                 src={TagIcon}
                 alt='tagIcon'
-                width={18}
-                height={18}
+                priority={false}
+                width={'auto'}
+                height={'auto'}
               />
               Tags
               <input
@@ -161,8 +212,9 @@ const NoteSinglePage = ({ singleNote }) => {
                     className='dark:invert'
                     src={StatusIcon}
                     alt='archivedIcon'
-                    width={18}
-                    height={18}
+                    priority={false}
+                    width={'auto'}
+                    height={'auto'}
                   />
                   Status
                 </span>
@@ -176,8 +228,9 @@ const NoteSinglePage = ({ singleNote }) => {
                 className='dark:invert'
                 src={ClockIcon}
                 alt='clockIcon'
-                width={18}
-                height={18}
+                priority={false}
+                width={'auto'}
+                height={'auto'}
               />
               Last edited
               <span className='flex gap-3 text-slate-500 dark:text-slate-300'>
@@ -195,32 +248,6 @@ const NoteSinglePage = ({ singleNote }) => {
             onChange={(e) => handleEditContent(e)}
           ></textarea>
         </div>
-      )}
-      <div className='w-44 py-2 px-2 border-l border-b border-slate-400 flex flex-col justify-between gap-4'>
-        <div className='w-full flex flex-col gap-3'>
-          <BorderButton
-            content={'Archive Note'}
-            icon={ArchiveIcon}
-            onClick={handleArchiveNote}
-          />
-          <BorderButton
-            content={'Delete Note'}
-            icon={DeleteIcon}
-            onClick={() => setIsDelete(true)}
-          />
-        </div>
-        {isEditing === true && (
-          <div className='w-full py-2 border-slate-400 flex flex-col gap-2 mb-24'>
-            <PrimaryButton
-              content={'Save Note'}
-              onClick={() => setIsSave(true)}
-            />
-            <SecondaryButton
-              content={'Cancel'}
-              onClick={() => setIsCancel(true)}
-            />
-          </div>
-        )}
       </div>
       {isCancel && (
         <ConfirmBox
@@ -250,4 +277,4 @@ const NoteSinglePage = ({ singleNote }) => {
   );
 };
 
-export default NoteSinglePage;
+export default MobileNoteSinglePage;

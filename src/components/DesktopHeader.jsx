@@ -5,7 +5,8 @@ import SettingsIcon from '@/assets/images/icon-settings.svg';
 import Image from 'next/image';
 
 const DesktopHeader = () => {
-  const { chosen, setChosen, search, setSearch } = useContext(NoteContext);
+  const { chosen, setChosen, search, setSearch, setNoteId, chosenTags } =
+    useContext(NoteContext);
 
   // show title by order
   const handleShowPageTitle = (chosen) => {
@@ -21,12 +22,23 @@ const DesktopHeader = () => {
     } else if (chosen === 'Settings') {
       return 'Settings';
     } else {
-      return `Notes Tagged: ${chosen}`;
+      if (!chosenTags) return 'Tags';
+      return `Notes Tagged: ${chosenTags}`;
     }
   };
 
   const handleSearchNotes = (event) => {
     setSearch(event.target.value);
+  };
+
+  const handleChoseSetting = () => {
+    if (chosen == 'Settings') return;
+    setChosen('Settings');
+    setNoteId(0);
+  };
+  const handleChoseSearch = () => {
+    if (chosen === 'Search') return;
+    setNoteId(0);
   };
 
   return (
@@ -36,29 +48,32 @@ const DesktopHeader = () => {
         <div className='relative' onClick={() => setChosen('Search')}>
           <input
             type='text'
-            className='w-40 h-10 border border-slate-400 rounded-md pl-3 pr-10 dark:hover:bg-slate-600 hover:bg-slate-200 transition-all duration-300'
+            className='w-52 h-10 border border-slate-400 rounded-md pl-3 pr-10 dark:hover:bg-slate-600 hover:bg-slate-200 transition-all duration-300'
             placeholder='Search...'
             value={search}
             onChange={handleSearchNotes}
+            onClick={handleChoseSearch}
           />
           <Image
             src={SearchIcon}
             alt={'searchIcon'}
-            className='absolute top-3 right-3 dark:invert'
-            width={15}
-            height={15}
+            className='absolute top-2 right-3 dark:invert'
+            priority={false}
+            width={'auto'}
+            height={'auto'}
           />
         </div>
         <div
           className='hover:bg-slate-300 dark:hover:bg-slate-700 p-2 rounded-md cursor-pointer transition-all duration-300'
-          onClick={() => setChosen('Settings')}
+          onClick={handleChoseSetting}
         >
           <Image
             className='dark:invert'
             src={SettingsIcon}
             alt='settingIcon'
-            width={20}
-            height={20}
+            priority={false}
+            width={'auto'}
+            height={'auto'}
           />
         </div>
       </div>
